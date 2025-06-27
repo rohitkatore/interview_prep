@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import {vapi} from "@/lib/vapi.sdk"
+import { interviewer } from '@/constants';
 
 enum CallStatus {
     INACTIVE ='INACTIVE',
@@ -18,7 +19,7 @@ interface SavedMessage{
     content :string ;
 }
 
-const Agent = ({ userName,userId,type }: AgentProps) => {
+const Agent = ({ userName,userId,type, questions, interviewId }: AgentProps) => {
     const router = useRouter() ;
     const [isSpeaking,setIsSpeaking] = useState(false) ;
     const [callStatus,setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE) ;
@@ -57,16 +58,37 @@ const Agent = ({ userName,userId,type }: AgentProps) => {
         }
     },[]);
 
+    const handleGenerateFeedback = async({}:SavedMessage[])=>{
+        console.log("Generate feedback here.") ;
+
+            //TODO : Create server action that generate feedback.
+            const {success, id} ={
+                success:true,
+                id:"1234"
+            }
+
+            if(success && id){
+                router.push(`/interview/${interviewId}/feedback`) ;
+            }else{
+                router.push("/");
+            }
+    }
+
     useEffect(()=>{
         if(callStatus === CallStatus.FINISHED){
-            router.push("/");
+            if(type === "generate"){
+                router.push("/");
+            }else{
+                handleGenerateFeedback(messages) ;
+            }
         }
     },[messages,callStatus,type,userId]) ;
 
     const handleCall = async() =>{
         setCallStatus(CallStatus.CONNECTING) ;
 
-        try {
+        if(type === "generate"){
+            try {
             // Replace with your valid assistant ID
             await vapi.start("f760b69d-d17e-48f0-b390-7bd020c124fd", {
             variableValues: {
@@ -77,6 +99,17 @@ const Agent = ({ userName,userId,type }: AgentProps) => {
         } catch (error) {
             console.error("Failed to start call:", error);
             setCallStatus(CallStatus.INACTIVE);
+        }
+        }else{
+            let formattedQuestions = '';
+            if(questions){
+                formattedQuestions = questions.map((question)=> `-${question}`).join('\n');
+            }
+            await vapi.start(interviewer,{
+                variableValues:{
+                    questions:formattedQuestions
+                }
+            })
         }
 
     }

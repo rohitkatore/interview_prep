@@ -7,7 +7,7 @@ import Link from 'next/link';
 import TechStackIcons from './TechStackIcons';
 
 
-function InterviewCard({ interviewId, userId, role, type, techstack, createdAt }: InterviewCardProps) {
+function InterviewCard({ id, userId, role, type, techstack, createdAt }: InterviewCardProps) {
     const feedback = null as Feedback | null;
     const normalizedType = /mix/gi.test(type) ? "mixed" : type;
     const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format("MMM D, YYYY");
@@ -42,7 +42,7 @@ function InterviewCard({ interviewId, userId, role, type, techstack, createdAt }
                     <TechStackIcons techStack={techstack}/>
 
                     <Button className='btn-primary'>
-                        <Link href={feedback ? `/interview/${interviewId}/feedback`:`/interview/${interviewId}`}>
+                        <Link href={feedback ? `/interview/${id}/feedback`:`/interview/${id}`}>
                         {feedback ? "Check Feedback" : "View Interview"}
                         </Link>
                     </Button>
