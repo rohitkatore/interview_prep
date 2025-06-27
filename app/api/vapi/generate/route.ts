@@ -11,7 +11,7 @@ export async function GET() {
 
 export async function POST(req:Request) {
     const {type, role,techstack,level,amount,userid} = await req.json() ;
-
+    console.log(type,role,techstack,level,amount,userid);
     try {
         const {text:questions} = await generateText({
             model:google("gemini-2.0-flash-001"),
