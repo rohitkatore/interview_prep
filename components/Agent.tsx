@@ -71,7 +71,7 @@ const Agent = ({ userName,userId,type }: AgentProps) => {
             await vapi.start("f760b69d-d17e-48f0-b390-7bd020c124fd", {
             variableValues: {
                 username: userName,
-                userId: userId,
+                userid: userId,
             }
             });
         } catch (error) {

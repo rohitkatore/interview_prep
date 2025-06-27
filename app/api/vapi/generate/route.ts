@@ -10,7 +10,7 @@ export async function GET() {
 }
 
 export async function POST(req:Request) {
-    const {type, role,techstack,level,amount,userId} = await req.json() ;
+    const {type, role,techstack,level,amount,userid} = await req.json() ;
 
     try {
         const {text:questions} = await generateText({
@@ -22,7 +22,7 @@ export async function POST(req:Request) {
             role, type, level,
             techstack: techstack.split(','),
             questions: JSON.parse(questions) ,
-            userId :userId,
+            userId :userid,
             finalized:true,
             coverImage:getRandomInterviewCover(),
             createdAt: new Date().toISOString() 
